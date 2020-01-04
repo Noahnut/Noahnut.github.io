@@ -30,7 +30,6 @@ github_username:  Noahnut
 theme: minima
 plugins:
   - jekyll-feed
-  - jekyll-graphviz
 graphviz:
   options: "-Tsvg" # 'dot' command option
   command: "dot" 
