@@ -38,9 +38,9 @@ st->op->op2
 從上面的例子來看就可以知道非同步的程式可以使時間可以相對被節省跟看起來比較有在做事（？。
 
 ## JavaScript 的非同步
-:::success
-在 Javascript 本身在執行時一次就只能做一件事能產生非同步的功能主要是透過瀏覽器或 NodeJS 所提供的 API 
-:::
+
+>在 Javascript 本身在執行時一次就只能做一件事能產生非同步的功能主要是透過瀏覽器或 NodeJS 所提供的 API 
+
 JavaScript 執行是在 單執行緒 (SingleThread) 的環境中，如果在網頁中需要有大量圖片載入那是不是就會導致其他部分因為檔案的 I/O 而無法執行，為了解決這樣的問題 JavaScript 透過呼叫瀏覽器或 NodeJS API 來達到非同步來讓程式在完成某些條件前能夠先去執行其他程式，實現這樣的功能主要是透過 **Event Loop** 的方式。
 而所謂的 **Event Loop** 就是一個檢查事件有沒有達到其條件的迴圈，其在 Javascript 中的運作簡單來講就是 (更詳細的 Event Loop 介紹會在另外一篇文章)
 ```graphviz
@@ -72,7 +72,7 @@ digraph graphname{
 
 * 接下來讓我們來看一些簡單的例子，來看一下非同步在 javascript 中是如何運作，這邊的例子我們是用 `setTimeout` 這個 API 
 
-```javascript=
+```javascript
 console.log("First");
 
 setTimeout(() => {
@@ -81,7 +81,7 @@ setTimeout(() => {
 
 console.log("Third");
 ```
-```shell=
+```shell
 First
 Thrid
 Async
@@ -90,7 +90,7 @@ Async
 從上面簡單的例子可以看出，最先印出了 `First` 然後是 `Third` 最後才是 `Async` 但是從程式來看，我們知道 Javascript 是直譯器常理來說應該會是`First` -> `Async` -> `Third` ，`setTimeout` 在這邊發揮它的作用，先執行印出 `Third` 等到都執行完後才去執行 `setTimeout` 中的程式。
 
 再來看一個比較複雜的例子，在 Async 的程式中執行 `ForEach` 
-```javascript=
+```javascript
 var array = [1, 2, 3, 4]
 
 //set the Timeout time will increase 
