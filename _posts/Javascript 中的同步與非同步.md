@@ -1,3 +1,9 @@
+---
+layout: post
+title: Javascript 中的同步與非同步 
+---
+
+
 # Javascript 中的同步與非同步
 ###### tags: JavaScript
 --- 
