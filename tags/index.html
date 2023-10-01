@@ -1,299 +1,198 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-siteapp">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    
-    <meta name="referrer" content="no-referrer-when-downgrade">
-    
-    <meta name="renderer" content="webkit"/>
-    <meta name="force-rendering" content="webkit"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <script>if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode)) window.location.href="https://support.dmeng.net/upgrade-your-browser.html?referrer="+encodeURIComponent(window.location.href); </script>
-    
-    
-        <link rel="preload" crossorigin="crossorigin" href="/fonts/roboto/Roboto-Regular.woff2" as="font">
-        <link rel="preload" crossorigin="crossorigin" href="/fonts/roboto/Roboto-Bold.woff2" as="font">
-    
-    
-    
-        <link rel="shortcut icon" href="/icons/favicon.ico">
-    
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>標籤頁 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="標籤頁">
+<meta property="og:url" content="http://example.com/tags/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-10-01T16:24:06.000Z">
+<meta property="article:modified_time" content="2023-10-01T16:24:51.709Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/tags/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '標籤頁',
+  isPost: false,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-10-02 00:24:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-    
-    
-        
-<link rel="stylesheet" href="/css/mdui.min.v1.0.0.css">
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-    
-    
-<link rel="stylesheet" href="/css/main.css">
-<link rel="stylesheet" href="/css/iconfont.css">
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
 
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
 
-    
-    
-
-    
-        <script data-ad-client="ca-" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-          
-
-
-    
-    
-    <title>
-        
-            標籤頁 | Hexo
-        
-    </title>
-    
-    
-<meta name="generator" content="Hexo 6.3.0"></head>
-<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-teal mdui-theme-accent-blue">
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
   
-  <header class="mdui-appbar mdui-appbar-fixed">
-  <div id="toolbar" class="mdui-toolbar mdui-color-theme">
-    <button class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="iconfont icon-menu"></i></button>
-    <a href="/" class="mdui-typo-headline">Hexo</a>
-    <a href="/" class="header-subtitle mdui-typo-headline"></a>
-    <div class="mdui-toolbar-spacer"></div>
-    <button class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: 'search'}"><i class="iconfont icon-search"></i></button>
-  </div>
-</header>
-
-<div class="mdui-dialog" id="search">
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
   
-    <div class="search-form">
-      <input type="search" class="search-form-input" placeholder="请输入关键字" onfocus="listenSearchFunc()">
-    </div>
-    <div class="search-result" data-resource="/search.xml"></div>
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
   
-</div>
-
-  <aside id="sidebar" class="mdui-drawer">
-    <div class="mdui-tab" mdui-tab>
-        <a href="#sidebar-tab1" id="sidebartab" class="mdui-ripple mdui-tab-active">Overview</a>
-        <a href="#sidebar-tab2" id="sidebartab" class="mdui-ripple">About</a>
-    </div>
-
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-    <div id="sidebar-tab1" class="mdui-p-a-1">
-        <div class="mdui-list">
-            
-                
-                <a href="/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-home"></i>
-                    </div>
-                    <div class="mdui-list-item-content">Home</div>
-                </a>
-            
-                
-                <a href="/tags/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-bookmark"></i>
-                    </div>
-                    <div class="mdui-list-item-content">Tags</div>
-                </a>
-            
-                
-                <a href="/categories/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-folder"></i>
-                    </div>
-                    <div class="mdui-list-item-content">Categories</div>
-                </a>
-            
-                
-                <a href="/archives/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-archive"></i>
-                    </div>
-                    <div class="mdui-list-item-content">Archives</div>
-                </a>
-            
-                
-                <a href="/tools/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-tools"></i>
-                    </div>
-                    <div class="mdui-list-item-content">工具箱</div>
-                </a>
-            
-                
-                <a href="/about/" class="mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-user"></i>
-                    </div>
-                    <div class="mdui-list-item-content">About</div>
-                </a>
-            
-            <div class="mdui-list-item mdui-ripple">
-                <div class="mdui-list-item-icon">
-                    <i class="iconfont icon-moon"></i>
-                </div>
-                <div class="mdui-list-item-content">Night Mode</div>
-                <label class="mdui-switch" id="darkmode">
-                  <input type="checkbox" id="nightmode_switch"/>
-                  <i class="mdui-switch-icon"></i>
-                </label>
-            </div>           
-        </div>
-    </div>
-
-    
-    <div id="sidebar-tab2" class="mdui-p-a-1">
-        <div class="sidebar-overview">
-            <div class="sidebar-avatar">
-                
-                    <img src="/icons/avatar.gif"/>
-                
-            </div>
-            <div class="sidebar-author-name">John Doe</div>
-            <div class="sidebar-description"></div>
-        </div>
-        <div class="sidebar-links">
-            
-                
-                <div class="mdui-chip">
-                    <span class="mdui-chip-icon"><i class="iconfont icon-mail"></i></span>
-                    <a href="mailto:xxx@xxx.com" class="mdui-chip-title">E-Mail</a>
-                </div>
-            
-                
-                <div class="mdui-chip">
-                    <span class="mdui-chip-icon"><i class="iconfont icon-github"></i></span>
-                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">GitHub</a>
-                </div>
-            
-                
-                <div class="mdui-chip">
-                    <span class="mdui-chip-icon"><i class="iconfont icon-steam"></i></span>
-                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">Steam</a>
-                </div>
-            
-                
-                <div class="mdui-chip">
-                    <span class="mdui-chip-icon"><i class="iconfont icon-weibo"></i></span>
-                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">Weibo</a>
-                </div>
-            
-        </div>
-        <ul class="mdui-list" mdui-collapse="{accordion: true}">
-            <li class="mdui-collapse-item">
-                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-                    <div class="mdui-list-item-icon">
-                        <i class="iconfont icon-link"></i>
-                    </div>
-                    <div class="mdui-list-item-content">Links</div>
-                    <div class="mdui-collapse-item-arrow">
-                        <i class="mdui-list-item-icon iconfont icon-angle-down"></i>
-                    </div>
-                </div>
-                <ul id="linksList" class="mdui-collapse-item-body mdui-list mdui-list-dense">
-                    
-                        <a target="_blank" rel="noopener" href="https://garybear.cn/hexo-theme-meadow/" class="mdui-list-item mdui-ripple">
-                            Meadow说明文档
-                        </a>
-                    
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-    <div class="mdui-divider"></div>
-    
-    
-</aside>
-  
-  <main id="main-contain" class="mdui-container mdui-m-t-5">
-    <div class="mdui-card mdui-p-b-2 mdui-m-b-5">
-    <div class="post-header"> 
-        <a class="post-header-title" href="/tags/index.html">標籤頁</a>
-    </div>
-    <div id="page-card" class="mdui-card-content mdui-p-x-4">
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-            <div class="page-describe">
-    No tags
-</div>
-<div class="tags-contain">
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
     
-</div>
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Hexo"><span class="site-name">Hexo</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="page-site-info"><h1 id="site-title">標籤頁</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="tag-cloud-list is-center"><a href="/tags/golang/" style="font-size: 1.2em; color: rgb(116, 192, 166)">golang</a></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">John Doe</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/02/golang-slice-array-compare/" title="探討 Golang Slice 與 Array 的差別">探討 Golang Slice 與 Array 的差別</a><time datetime="2023-10-01T16:30:51.000Z" title="Created 2023-10-02 00:30:51">2023-10-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/02/hello-world/" title="Hello World">Hello World</a><time datetime="2023-10-01T16:12:15.842Z" title="Created 2023-10-02 00:12:15">2023-10-02</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/golang/" style="font-size: 1.1em; color: #999">golang</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">October 2023</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">2</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Push :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-10-01T16:43:49.071Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By John Doe</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
 
-        </div>
-        
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
 
-  </main>
-  <footer id="footer" class="mdui-text-center mdui-m-t-5 mdui-p-b-2 mdui-p-t-4 mdui-color-theme">
-  <div class="mdui-container">
-    <div class="mdui-row">
-      
-        <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank"></a>
-      
-      <span>
-        &copy; 2015 - 2023 
-        
-          <span style="color:#d9333f" class="iconfont icon-heart"></span>
-        
-        John Doe
-      </span>
-    </div>
-    <div class="mdui-row">
-      
-        <div class="mdui-col-xs-6 mdui-text-right">
-          <span>Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a></span>
-        </div>
-        <div class="mdui-col-xs-6 mdui-text-left">
-          <span>Theme: <a href="https://github.com/kb1000fx/Meadow" rel="noopener" target="_blank">Meadow</a></span>
-        </div>
-      
-    </div>
-    <div class="mdui-row">
-      
-        <div class="mdui-col-xs-6 mdui-text-right">
-          <span id="busuanzi_container_site_uv" style="display: none;"> <span class="iconfont icon-user"></span>Total Visitors <span id="busuanzi_value_site_uv"></span></span>
-        </div>
-        <div class="mdui-col-xs-6 mdui-text-left">
-          <span id="busuanzi_container_site_pv" style="display: none;"> <span class="iconfont icon-eye"></span>Total Views <span id="busuanzi_value_site_pv"></span></span>
-        </div>
-      
-    </div>
- </div>
-</footer>
-  
-  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-ripple mdui-color-teal" style="z-index:100;"><i class="iconfont icon-arrowup"></i></button>
-  
-  
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
 
-    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
 
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
 
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
 
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
 
+  btf.addModeChange('mermaid', runMermaid)
 
-
-
-    
-<script src="/js/mdui.min.v1.0.0.js"></script>
-
-
-
-
-<script src="/js/meadow.js"></script>
-
-</body>
-</html >
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
