@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>論文閱讀： MapReduce Simplified Data Processing on Larger Clusters | Fan's Blog</title><meta name="author" content="Fan"><meta name="copyright" content="Fan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介紹MapReduce 是 Google 所提出的一個 Programming Model，目標是要實現簡單的介面讓工程師就能夠將複雜的將大量資料分散到不同機器運算。MapReduce 其實就是利用 Divide and Conquer 的概念將大資料切分成小資料後再分別處理後在合再一起，透過這樣的方式可以讓這些被切分的小資料能夠被分散到不同機器上執行。 MapReduce 的 Programmi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文閱讀： MapReduce Simplified Data Processing on Larger Clusters">
+<meta property="og:url" content="http://example.com/2023/11/16/map-reduce/index.html">
+<meta property="og:site_name" content="Fan&#39;s Blog">
+<meta property="og:description" content="介紹MapReduce 是 Google 所提出的一個 Programming Model，目標是要實現簡單的介面讓工程師就能夠將複雜的將大量資料分散到不同機器運算。MapReduce 其實就是利用 Divide and Conquer 的概念將大資料切分成小資料後再分別處理後在合再一起，透過這樣的方式可以讓這些被切分的小資料能夠被分散到不同機器上執行。 MapReduce 的 Programmi">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2023-11-15T16:09:23.000Z">
+<meta property="article:modified_time" content="2023-11-15T16:09:23.942Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><link rel="shortcut icon" href="/img/icon.png"><link rel="canonical" href="http://example.com/2023/11/16/map-reduce/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '論文閱讀： MapReduce Simplified Data Processing on Larger Clusters',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-16 00:09:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Fan's Blog"><span class="site-name">Fan's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">論文閱讀： MapReduce Simplified Data Processing on Larger Clusters</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-11-15T16:09:23.000Z" title="Created 2023-11-16 00:09:23">2023-11-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-11-15T16:09:23.942Z" title="Updated 2023-11-16 00:09:23">2023-11-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="論文閱讀： MapReduce Simplified Data Processing on Larger Clusters"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><p>MapReduce 是 Google 所提出的一個 Programming Model，目標是要實現簡單的介面讓工程師就能夠將複雜的將大量資料分散到不同機器運算。<br>MapReduce 其實就是利用 Divide and Conquer 的概念將大資料切分成小資料後再分別處理後在合再一起，透過這樣的方式可以讓這些被切分的小資料能夠被分散到不同機器上執行。</p>
+<h2 id="MapReduce-的-Programming-Model"><a href="#MapReduce-的-Programming-Model" class="headerlink" title="MapReduce 的 Programming Model"></a>MapReduce 的 Programming Model</h2><p>MapReduce 的 Programming Model 由 <code>Map</code> 和 <code>Reduce</code> 這兩個行為所組成，將傳入的 Key Value 資料經過這兩個行為後得出結果</p>
+<h3 id="Map-Divide"><a href="#Map-Divide" class="headerlink" title="Map (Divide)"></a>Map (Divide)</h3><p>由使用者自定義的行為，會將 Key Value 的資料根據相同的 Key 或其他邏輯將這些資料組成有相同類型資料的 <code>intermediate</code> 資料。<br>Map 這邊在定義的時候必須要考慮<strong>資料計算的幂等性</strong>，相同的資料不管計算幾次出來的 <code>intermediate</code> 資料應該都要是一樣，原因為 MapReduce 是一個分散式的系統架構，如果機器失效導致當下的這個 <code>Map</code> 失敗的話就必須讓其他機器來執行，當沒有這個幂等性時就會導致結果錯誤。由 <code>Map</code> 計算出來的 <code>intermediate</code> 資料就會送出 <code>Reduce</code> 做下一階段的處理。</p>
+<h3 id="Reduce-Conquer"><a href="#Reduce-Conquer" class="headerlink" title="Reduce (Conquer)"></a>Reduce (Conquer)</h3><p><code>Reduce</code> 會收集來自不同機器的 <code>Map</code> 所產生的 <code>intermediate</code> 資料，就透過其 Key，將這些資料透過自訂的邏輯合併再一起，這個在定義的也是要考慮<strong>資料計算的幂等性</strong>。</p>
+<p>其實 MapReduce 的 Programming Model 就是 Divide and Conquer 的概念，透過資料的切分讓資料能夠分散到不同機器上。</p>
+<h2 id="MapReduce-的執行流程"><a href="#MapReduce-的執行流程" class="headerlink" title="MapReduce 的執行流程"></a>MapReduce 的執行流程</h2><p>MapReduce 的分散式設計是基於 <code>Master-Worker</code> 的模型去實作的，也就是會有一個主要角色去做工作上的分派與協調。</p>
+<h3 id="名詞解釋"><a href="#名詞解釋" class="headerlink" title="名詞解釋"></a>名詞解釋</h3><p><strong>Master</strong>:</p>
+<p>MapReduce 中做 <code>Map</code> 與 <code>Reduce</code> 的工作分派、通知與 Fault Tolerance 的角色，負責控制全場的 Worker。</p>
+<p><strong>Worker</strong>:</p>
+<p>接收來自 Master 的工作分派的角色</p>
+<h3 id="執行流程"><a href="#執行流程" class="headerlink" title="執行流程"></a>執行流程</h3><p><img src="/2023/11/16/map-reduce/flow.png" alt="Alt text"></p>
+<p>MapReduce 的主要執行流程會是上圖的方式，下面會詳細介紹在論文中提到這些流程步驟與需要注意的部分。</p>
+<p><strong>前置動作</strong></p>
+<p>前面有提到 MapReduce 是將切片好的資料分給不同 <code>Worker</code> 所以就需要先將資料做個切塊的前置動作，論文中提到切片的大小通常介於 16MB 到 64MB 之間<br>這個部分是由使用者自行去決定的。</p>
+<p><strong>Step One</strong></p>
+<p><code>Master</code> 會分派 M 個 <code>Map</code> 跟 R 個 <code>Reduce</code> 到工作給目前閒置的 <code>Worker</code>，而拿到 <code>Map</code> 的 <code>Worker</code> 會從被切塊中的資料取若干個進行計算。<br>而 M 跟 R 的大小會分別是多大？還有 <code>Map</code> 的 <code>Worker</code> 的切塊資料取多少會比較合理？</p>
+<ol>
+<li><p><strong>M 跟 R 的大小會分別是多大</strong></p>
+<p> <code>Map</code> 的工作是取得切塊的資料做計算，如果 M 太小，會導致取的資料大小變大這樣如果出現問題重做，損耗就會很大，而 <code>Reduce</code> 會希望根據客戶需求產生出較少數量的文件，所以 Google 本身常用的數字會是 <code>M = 200,000</code>，<code>R = 5,000</code> 在 <code>2000</code> 個 worker 上。</p>
+</li>
+<li><p><strong><code>Map</code> 的 <code>Worker</code> 的切塊資料取多少會比較合理</strong><br> 通常是 16MB 到 64MB 之間，原因應該是 <code>Map</code> worker 如果出現問題，在 MapReduce 的機制是直接重做，如果過大的資料會導致重做的成本太高。</p>
+</li>
+</ol>
+<p><strong>Step Two</strong></p>
+<p><code>Map</code> 計算完後會產生出 <code>intermediate Key Value</code> 的資料，這些資料都會先暫存在 <code>Worker</code> 的 Memory 與 Local Disk，<code>Worker</code> 完成後會通知 <code>Master</code> 已經完成 <code>Map</code> 任務。</p>
+<p><strong>Step Three</strong></p>
+<p><code>Master</code> 會通知目前沒任務執行的 <code>Reduce</code>，有哪些 <code>Map</code> 的 <code>Worker</code> 是完成的，並且去從這些 <code>Worker</code> 中拿取 <code>intermediate Key Value</code> 的資料並做運算，而運算出來的資料會放在 Global 的檔案系統 (HDFS 或者是 GFS)。</p>
+<p><strong>Step Four</strong></p>
+<p>如果 <code>Reduce</code> 出來的資料有多份，就會持續進行上述步驟直到滿足顧客需求。</p>
+<h2 id="MapReduce-的-Fault-Tolerance"><a href="#MapReduce-的-Fault-Tolerance" class="headerlink" title="MapReduce 的 Fault Tolerance"></a>MapReduce 的 Fault Tolerance</h2><p>MapReduce 是將工作給分攤給多台不同的機器，這樣就會需要處理機器壞掉時的情況。</p>
+<h3 id="Worker-Failure"><a href="#Worker-Failure" class="headerlink" title="Worker Failure"></a>Worker Failure</h3><p><code>Master</code> 會持續的 Ping <code>Worker</code> 監控各個 <code>Worker</code> 目前的生存狀況，如果 <code>Worker</code> 在一段時間內沒有回覆 <code>Master</code> 就會根據這個 <code>Worker</code> 的工作內容執行錯誤處理。<br>Worker 如果因為機器掛掉或者出現網路問題，MapReduce 這邊的機制就是直接重新將任務交由其他 Worker 重做，但是針對已完成但是出現錯誤的 Worker 根據任務會有不一樣的處理方式，如果是 <code>Map</code> 因為資料儲存在本地端所以是需要重做，但如果是 <code>Reduce</code> 任務因為是存在 Global File System，所以不需要重做。</p>
+<p>而 <code>Master</code> 針對不同任務的 Worker，在處理重複計算的資料有不同的做法，<code>Map</code> 因為有資料的幂等性所以不管誰來做都可以，這樣 Master 如果收到不同 Worker 完成相同的 <code>Map</code> 任務就會無視下一個 Worker 的完成回傳，而如果是 <code>Reduce</code> 相同的任務會產生相同的檔案名稱，這樣下一個就只是覆蓋掉相同檔案也維持結果的幂等性。</p>
+<h3 id="Master-Failure"><a href="#Master-Failure" class="headerlink" title="Master Failure"></a>Master Failure</h3><p>在論文中，針對 <code>Master</code> Failure 的做法就是單純告知用戶執行失敗並請用戶重新執行。</p>
+<h3 id="Backup-Task"><a href="#Backup-Task" class="headerlink" title="Backup Task"></a>Backup Task</h3><p>在論文中提到 MapReduce 常常在最後階段時會遇到某些 Worker 因為硬體因素執行過久導致實際完成時間拉長，為了解決這個問題這邊當執行到最後的時候會讓其他空閒的 Worker 也去執行相同任務避免等待過久。</p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>MapReduce 提供一個非常簡單的介面讓使用者可以平行的計算資料，雖然這邊的做法是用很單純的 <code>Master Worker</code> 的 Model，但也提供許多有趣的思路，利用簡單的方法去簡化問題。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/paper/">paper</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/11/10/chean-architecture-chapter-two/" title="Clean Architecture Chapter Two"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Clean Architecture Chapter Two</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Fan</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Noahnut" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/qi-fan-zhuang-7664491a2/" target="_blank" title="Linkedin"><i class="fab fa-linkedin" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:liveinthewide@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%B4%B9"><span class="toc-number">1.</span> <span class="toc-text">介紹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MapReduce-%E7%9A%84-Programming-Model"><span class="toc-number">2.</span> <span class="toc-text">MapReduce 的 Programming Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Map-Divide"><span class="toc-number">2.1.</span> <span class="toc-text">Map (Divide)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reduce-Conquer"><span class="toc-number">2.2.</span> <span class="toc-text">Reduce (Conquer)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MapReduce-%E7%9A%84%E5%9F%B7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">MapReduce 的執行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8D%E8%A9%9E%E8%A7%A3%E9%87%8B"><span class="toc-number">3.1.</span> <span class="toc-text">名詞解釋</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%B7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">執行流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MapReduce-%E7%9A%84-Fault-Tolerance"><span class="toc-number">4.</span> <span class="toc-text">MapReduce 的 Fault Tolerance</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Worker-Failure"><span class="toc-number">4.1.</span> <span class="toc-text">Worker Failure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Master-Failure"><span class="toc-number">4.2.</span> <span class="toc-text">Master Failure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Backup-Task"><span class="toc-number">4.3.</span> <span class="toc-text">Backup Task</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-number">5.</span> <span class="toc-text">結論</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/16/map-reduce/" title="論文閱讀： MapReduce Simplified Data Processing on Larger Clusters">論文閱讀： MapReduce Simplified Data Processing on Larger Clusters</a><time datetime="2023-11-15T16:09:23.000Z" title="Created 2023-11-16 00:09:23">2023-11-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/10/chean-architecture-chapter-two/" title="Clean Architecture Chapter Two">Clean Architecture Chapter Two</a><time datetime="2023-11-10T13:42:00.000Z" title="Created 2023-11-10 21:42:00">2023-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/09/chear-architechure-chapter-one/" title="Clean Architecture Chapter One">Clean Architecture Chapter One</a><time datetime="2023-11-09T13:47:15.000Z" title="Created 2023-11-09 21:47:15">2023-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/cache-intro/" title="什麼是 Cache">什麼是 Cache</a><time datetime="2023-10-21T08:15:38.000Z" title="Created 2023-10-21 16:15:38">2023-10-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/05/intro-time-series-db/" title="Time Series Database 簡介"><img src="/2023/10/05/intro-time-series-db/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Time Series Database 簡介"/></a><div class="content"><a class="title" href="/2023/10/05/intro-time-series-db/" title="Time Series Database 簡介">Time Series Database 簡介</a><time datetime="2023-10-04T16:32:17.000Z" title="Created 2023-10-05 00:32:17">2023-10-05</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Fan</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
