@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>論文閱讀：A Critique of ANSI SQL Isolation Levels | Fan's Blog</title><meta name="author" content="Fan"><meta name="copyright" content="Fan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言ANSI SQL-92 是在 1992 年所定製的相關 SQL 規範，其中就定義四種 Isolation Level 分別有 Read Uncommitted, Read Committed, Repeatable Read, Serializable 跟四種分別要解決的三種問題，分別有 Dirty Read, Non-Repeatable Read, Phantom，隨著隔離層級越高就代表能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文閱讀：A Critique of ANSI SQL Isolation Levels">
+<meta property="og:url" content="http://example.com/2023/12/08/critique-ansi-sql-isolation/index.html">
+<meta property="og:site_name" content="Fan&#39;s Blog">
+<meta property="og:description" content="前言ANSI SQL-92 是在 1992 年所定製的相關 SQL 規範，其中就定義四種 Isolation Level 分別有 Read Uncommitted, Read Committed, Repeatable Read, Serializable 跟四種分別要解決的三種問題，分別有 Dirty Read, Non-Repeatable Read, Phantom，隨著隔離層級越高就代表能">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2023-12-08T08:53:58.000Z">
+<meta property="article:modified_time" content="2023-12-08T08:53:58.732Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><link rel="shortcut icon" href="/img/icon.png"><link rel="canonical" href="http://example.com/2023/12/08/critique-ansi-sql-isolation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '論文閱讀：A Critique of ANSI SQL Isolation Levels',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-08 16:53:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Fan's Blog"><span class="site-name">Fan's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">論文閱讀：A Critique of ANSI SQL Isolation Levels</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-12-08T08:53:58.000Z" title="Created 2023-12-08 16:53:58">2023-12-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-12-08T08:53:58.732Z" title="Updated 2023-12-08 16:53:58">2023-12-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="論文閱讀：A Critique of ANSI SQL Isolation Levels"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ANSI SQL-92 是在 1992 年所定製的相關 SQL 規範，其中就定義四種 <code>Isolation Level</code> 分別有 <code>Read Uncommitted</code>, <code>Read Committed</code>, <code>Repeatable Read</code>, <code>Serializable</code> 跟四種分別要解決的三種問題，分別有 <code>Dirty Read</code>, <code>Non-Repeatable Read</code>, <code>Phantom</code>，隨著隔離層級越高就代表能夠解決的問題越多但平行度也越低。</p>
+<p>但是這些規範跟提到的問題並沒有提供一個明確的解釋跟在定義時沒有將 <code>Lock</code> 的概念一起考慮進去，所以導致目前主流資料庫的設計方式都會跟 ANSI 的 <code>Isolation Level</code> 有點出入，並且有些問題也是 ANSI SQL-92 沒有定義的，例如：<code>Write Skew</code>, <code>Read Skew</code>。</p>
+<p>這篇文章會介紹論文作者們怎麼去定義現在的 <code>Isolation Level</code>。</p>
+<h2 id="Database-中會出現問題的現象跟錯誤"><a href="#Database-中會出現問題的現象跟錯誤" class="headerlink" title="Database 中會出現問題的現象跟錯誤"></a>Database 中會出現問題的現象跟錯誤</h2><p>在論文中用 <em><strong>P</strong></em> 表示事務執行順序的現象，<em><strong>A</strong></em> 代表會出現問題的事務執行順序，論文中詳細的定義這些錯誤發生的流程與原因。</p>
+<p>而這邊的邏輯符號是這樣解讀的：<br>    $w1[x]$ ：事務 1 寫入到 $x$。<br>    $r1[x]$ ：事務 1 從 $x$ 讀取資料。<br>    $c1$： 事務 1 <code>Coomit</code>。<br>    $a1$：事務 1 <code>Abort</code>。<br>    $P$: 資料區間，類似 <code>WHERE</code> 的語法。</p>
+<p><strong>Dirty Read (P1)</strong></p>
+<p>另外一個事務尚未 <code>Commit</code> 或 <code>Rollback</code>，現在的事務就讀到其更新過後的值。</p>
+<p>$P1:\space w1[x]…r2[x]…$</p>
+<p>$A1:\space w1[x]…r2[x]…$</p>
+<p><strong>Non-Repeatable or Fuzzy Read (P2)</strong></p>
+<p>當下事務讀一次資料，然後另外一個事務更新同一個資料並 <code>Commit</code>，導致事務在讀一次得到的資料跟上一次的不一樣。</p>
+<p>$P2:\space r1[x]…w2[x]…$</p>
+<p>$A2:\space r1[x]…w2[x]…c2…r1[x]…c1$</p>
+<p><strong>Phantom (P3)</strong></p>
+<p>當下事務讀一個區間中的資料，然後另外一個事務在更改這個區間中的資料 (Insert 或 Update)，然後 <code>Commit</code>，導致當下事務在讀一起得到跟上次不同的資料。</p>
+<p>$P3:\space r1[P]…w2[y\space in \space P]…$</p>
+<p>$A3:\space r1[P]…w2[y\space in \space P]…c2…r1[P]…c1$</p>
+<p><strong>Lost Update (P4)</strong></p>
+<p>當下事務讀出資料並根據資料狀態準備寫入，但另外一個事務先寫入，而當下事務寫入後並 <code>Commit</code>，導致另外一個事務的寫入消失。</p>
+<p>$P4:\space r1[x]…w2[x]…w1[x]…c1$</p>
+<p><strong>Read Skew (A5A)</strong></p>
+<p>當下事務的值因為被其他更改而導致值已經跟事務開始時不一樣。</p>
+<p>$A5A:\space r1[x]…w2[x]…w2[y]…c2…r1[y]…(c1 \space or \space a1)$</p>
+<p><strong>Write Skew (A5B)</strong></p>
+<p>當前事務從 x 讀出某個值並用這個值去更新 y，另外一個事務則是先讀出 y 值後去更新 x 值，這樣就導致 x 跟 y 值得不一致性。</p>
+<p>$A5B:\space r1[x]…r2[y]…w1[y]…w2[x]…(c1 \space and \space c2)$</p>
+<h2 id="解決錯誤的隔離層級"><a href="#解決錯誤的隔離層級" class="headerlink" title="解決錯誤的隔離層級"></a>解決錯誤的隔離層級</h2><p>ANSI SQL-92 提供的是一個概念，而現在的 Database 設計實作時都會採用一些不同的概念 (MVCC, Lock…) 來實作，有些時候這個隔離層級雖然在某個資料庫被定義為 <code>Repeated Read</code> 但是搭配一些其他的實作卻可以解決要在上一個層級才能解決的現象，所以下方這張圖表提供一個大概念但也會讓人跟現代資料庫的實作搞混，像是 MySQL 的 <code>Repeated Read</code> 搭配鎖可以解決 <code>Phantom</code> 的問題。 </p>
+<p><img src="/2023/12/08/critique-ansi-sql-isolation/ansi_sql_table.jpeg" alt="Alt text"></p>
+<p>所以論文就介紹在現代資料庫中最常出現的兩個實作概念，並且搭配 ANSI SQL-92 來完整解決錯誤的規範。</p>
+<h3 id="Snapshot"><a href="#Snapshot" class="headerlink" title="Snapshot"></a>Snapshot</h3><p>在事務開始的時候，將當下要讀寫的資料做成一個副本，並且在 <code>Commit</code> 的時候去處理衝突，這個技術根據不同 Database 都有不一樣的實作，例如 MySQL 就是用 <code>Undo Log</code> 搭配 <code>ReadView</code>，這邊就不特別介紹詳細的技術細節，但是可以知道這樣的做法可以提高資料處理的平行化。 </p>
+<h3 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h3><p>論文中把上鎖的隔離層級分成 4 種 Degree，根據讀鎖跟寫鎖的是否持有與持有時間來決定其等級，數字越大代表等級越高也代表其鎖的持有時間越長，平行度越低。</p>
+<p><strong>Degree 0</strong>: 可以允許 <code>Dirty Read/Write</code> 只需要保持 <code>Atomicity</code><br><strong>Degree 1 (Locking Uncommitted)</strong>: 讀不上鎖，寫上鎖並到事務結束<br><strong>Degree 2 (Locking Read Committed)</strong>: 讀上鎖但只有操作資料的時候上鎖，寫上鎖並到事務結束<br><strong>Degree 3 (Locking Serializable)</strong>:  讀上鎖直到事務結束，寫上鎖後也是直到事務結束</p>
+<p>根據上述實作與 ANSI SQL-92 綜合起來就整理出一份能解決問題實作的圖表。</p>
+<p><img src="/2023/12/08/critique-ansi-sql-isolation/total_isolation.jpeg" alt="Alt text"></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>我個人對於這篇論文的最後解讀是，<code>Isolation Levels</code> 在各個不同 Database 的實作都不同，能夠解決的問題範圍也是不同，所以在使用 <code>Isolation Levels</code> 不應該相信其所代表的意思，而是能夠解決的問題。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/paper/">paper</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/12/03/redis-pubsub-pub/" title="Redis 源碼解析 - PubSub 實作 (Publish)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Redis 源碼解析 - PubSub 實作 (Publish)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2023/11/16/map-reduce/" title="論文閱讀： MapReduce Simplified Data Processing on Larger Clusters"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">論文閱讀： MapReduce Simplified Data Processing on Larger Clusters</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Fan</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Noahnut" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/qi-fan-zhuang-7664491a2/" target="_blank" title="Linkedin"><i class="fab fa-linkedin" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:liveinthewide@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Database-%E4%B8%AD%E6%9C%83%E5%87%BA%E7%8F%BE%E5%95%8F%E9%A1%8C%E7%9A%84%E7%8F%BE%E8%B1%A1%E8%B7%9F%E9%8C%AF%E8%AA%A4"><span class="toc-number">2.</span> <span class="toc-text">Database 中會出現問題的現象跟錯誤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%B1%BA%E9%8C%AF%E8%AA%A4%E7%9A%84%E9%9A%94%E9%9B%A2%E5%B1%A4%E7%B4%9A"><span class="toc-number">3.</span> <span class="toc-text">解決錯誤的隔離層級</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Snapshot"><span class="toc-number">3.1.</span> <span class="toc-text">Snapshot</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock"><span class="toc-number">3.2.</span> <span class="toc-text">Lock</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-number">4.</span> <span class="toc-text">結論</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/08/critique-ansi-sql-isolation/" title="論文閱讀：A Critique of ANSI SQL Isolation Levels">論文閱讀：A Critique of ANSI SQL Isolation Levels</a><time datetime="2023-12-08T08:53:58.000Z" title="Created 2023-12-08 16:53:58">2023-12-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/03/redis-pubsub-pub/" title="Redis 源碼解析 - PubSub 實作 (Publish)">Redis 源碼解析 - PubSub 實作 (Publish)</a><time datetime="2023-12-03T02:41:21.000Z" title="Created 2023-12-03 10:41:21">2023-12-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/28/redis-pubsub-code/" title="Redis 源碼解析 - PubSub 實作 (Subscribe)">Redis 源碼解析 - PubSub 實作 (Subscribe)</a><time datetime="2023-11-28T08:16:08.000Z" title="Created 2023-11-28 16:16:08">2023-11-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/26/mysql-source-start-transaction/" title="MySQL 源碼解析 - 事務開始">MySQL 源碼解析 - 事務開始</a><time datetime="2023-11-26T02:54:21.000Z" title="Created 2023-11-26 10:54:21">2023-11-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/23/mysql-source-mvcc-transaction/" title="MySQL 源碼解析 - MVCC ReadView 建立">MySQL 源碼解析 - MVCC ReadView 建立</a><time datetime="2023-11-23T13:29:24.000Z" title="Created 2023-11-23 21:29:24">2023-11-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Fan</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
