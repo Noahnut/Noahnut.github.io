@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Dynamo Amazon 的高可用性 Key-Value Database | Fan's Blog</title><meta name="author" content="Fan"><meta name="copyright" content="Fan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Dynamo 的背景Amazon 面對大流量的電商相關的操作，如果有一些用戶無法使用就會造成嚴重的用戶體驗不佳的問題，所以 Amazon 根據他們的使用場景設計出具有高可用性、高效能和水平擴展但犧牲強一致性的分散式 Key-Value 資料庫。 Dynamo 的設計Amazon 根據他們的需求提出以下的設計原則，並接下來會討論他們在這些設計原則下使用哪些技術來完成他們的目的。 Dynamo 設計原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dynamo Amazon 的高可用性 Key-Value Database">
+<meta property="og:url" content="http://example.com/2024/03/08/dynamo-amazon-keyvalue-db/index.html">
+<meta property="og:site_name" content="Fan&#39;s Blog">
+<meta property="og:description" content="Dynamo 的背景Amazon 面對大流量的電商相關的操作，如果有一些用戶無法使用就會造成嚴重的用戶體驗不佳的問題，所以 Amazon 根據他們的使用場景設計出具有高可用性、高效能和水平擴展但犧牲強一致性的分散式 Key-Value 資料庫。 Dynamo 的設計Amazon 根據他們的需求提出以下的設計原則，並接下來會討論他們在這些設計原則下使用哪些技術來完成他們的目的。 Dynamo 設計原">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2024-03-08T03:21:01.000Z">
+<meta property="article:modified_time" content="2024-03-08T03:21:01.805Z">
+<meta property="article:author" content="Fan">
+<meta property="article:tag" content="database">
+<meta property="article:tag" content="paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><link rel="shortcut icon" href="/img/icon.png"><link rel="canonical" href="http://example.com/2024/03/08/dynamo-amazon-keyvalue-db/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Dynamo Amazon 的高可用性 Key-Value Database',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-08 11:21:01'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Fan's Blog"><span class="site-name">Fan's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Dynamo Amazon 的高可用性 Key-Value Database</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-03-08T03:21:01.000Z" title="Created 2024-03-08 11:21:01">2024-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-03-08T03:21:01.805Z" title="Updated 2024-03-08 11:21:01">2024-03-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Dynamo Amazon 的高可用性 Key-Value Database"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="Dynamo-的背景"><a href="#Dynamo-的背景" class="headerlink" title="Dynamo 的背景"></a>Dynamo 的背景</h2><p>Amazon 面對大流量的電商相關的操作，如果有一些用戶無法使用就會造成嚴重的用戶體驗不佳的問題，所以 Amazon 根據他們的使用場景設計出具有<strong>高可用性</strong>、<strong>高效能</strong>和<strong>水平擴展</strong>但犧牲<strong>強一致性</strong>的分散式 Key-Value 資料庫。</p>
+<h2 id="Dynamo-的設計"><a href="#Dynamo-的設計" class="headerlink" title="Dynamo 的設計"></a>Dynamo 的設計</h2><p>Amazon 根據他們的需求提出以下的設計原則，並接下來會討論他們在這些設計原則下使用哪些技術來完成他們的目的。</p>
+<h3 id="Dynamo-設計原則"><a href="#Dynamo-設計原則" class="headerlink" title="Dynamo 設計原則"></a>Dynamo 設計原則</h3><ol>
+<li><strong>Incremental Scalability</strong><br> Dynamo 的 Node 應該可以在不影響系統的情況下水平擴展或縮減。</li>
+<li><strong>Symmetry</strong><br> 每一個 Node 應該負責的功能都要相同，不應該有些 Node 存有特定資料。</li>
+<li><strong>Decentralization</strong><br>去中心化的系統，讓系統可以更容易水平擴展與高可用性。</li>
+<li><strong>Heterogeneity</strong><br> 不同的服務去使用 Dynamo 不需要因為 Dynamo 的 Node 增減也去做服務本身的調整。</li>
+</ol>
+<h4 id="Partitioning"><a href="#Partitioning" class="headerlink" title="Partitioning"></a>Partitioning</h4><p>Dynamo 要達到 <code>Scalability</code> 與 <code>高可用性</code>，資料的分區 (Partitioning) 是非常重要的，Dynamo 為了要達到增刪 Node 的時候對於資料的影響降到最小，採用 <code>Consistent Hash</code> 的方法來進行資料分區。</p>
+<p><code>Consistent Hash</code> 演算法是想像將 Node 放在一個圓上，然後根據資料 Hash 後的值來看其在圓上順時針後遇到的第一個 Node 就是資料要存放的地方，如果增減節點會影響的只有其順時針向的另外一個節點。</p>
+<p><img src="/2024/03/08/dynamo-amazon-keyvalue-db/consistent_hash.png" alt="Alt text"></p>
+<p>最基礎的 <code>Consistent Hash</code> 演算法會有一個問題就是當 Node 數量少的時候，因為 Node 在圓上的位置可能沒這麼均衡而導致某些 Node 出現資料傾斜，所以 Dynamo 這邊加入 <code>Virtual Node</code>，這個 <code>Virtual Node</code> 的意思就是在圓上多幾個 Node 而這些 Node 實際上都代表著同一台實體的 Node，當數量增加就可以讓資料的分區均衡。</p>
+<p><img src="/2024/03/08/dynamo-amazon-keyvalue-db/virtual_node_consistent.png" alt="Alt text"></p>
+<h4 id="寫入的高可用性"><a href="#寫入的高可用性" class="headerlink" title="寫入的高可用性"></a>寫入的高可用性</h4><p>Dynamo 設計時的目的就是要避免 Amazon 的客戶在使用電商網站時出現新增產品但出現錯誤，產品新增失敗而導致用戶體驗不佳，所以 Dynamo 非常重視寫入資料時的高可用性。</p>
+<p>Dynamo 的資料在 Amazon 架構中會有多個副本在不同 Node 中，目的是提供資料的高可用性與減少網路距離的消耗，但是這樣的架構下就必須面對 <strong>一致性</strong> 的問題而 Dynamo 為了要達成寫入的高可用性選擇 <code>最終一致性</code> 作為其一致性的標準，<code>最終一致性</code> 所代表的意思是可以接受 Node 之間的資料可以不一樣但最後會變成一樣，這樣就能提高寫入的效能與高可用性但這可能會出現資料在不同 Node 上有不同的值，而 Dynamo 這邊是使用 <code>Vector Clock</code> 來處理資料衝突的問題。</p>
+<h5 id="Vector-Clock"><a href="#Vector-Clock" class="headerlink" title="Vector Clock"></a>Vector Clock</h5><p><code>Vector Clock</code> 是一種用來處理資料的先後順序與因果關係衝突的演算法，每一個 Node 在跟其他 Node 同步資料的時候都會帶上 <code>(Node, Counter)</code>，<code>Counter</code> 所代表的意思是每一個資料更新<br>時的遞增值，所以一個值被更新時會有不同時間的 <code>Vector</code>，例如 <code>Node A</code> 寫入 <code>Object A</code> 就會有 <code>(Node_A, 1)</code>， 然後 <code>Node A</code> 再將其同步給其他節點，其他節點就會拿到包含 <code>(Node_A, 1)</code> 的物件，假設今天有兩個節點，分別是 <code>Node B</code> 跟 <code>Node C</code> 都接受 <code>Object A</code> 的更新就會出現資料版本的分歧，<code>Vector Clock</code> 的做法是將所有的版本先記錄下來，如果出現衝突在由用戶端決定哪個資料是要留下來的。</p>
+<h4 id="短暫停機資料處理-Hinted-Handoff"><a href="#短暫停機資料處理-Hinted-Handoff" class="headerlink" title="短暫停機資料處理 Hinted Handoff"></a>短暫停機資料處理 Hinted Handoff</h4><p><code>Dynamo</code> 需要寫的高可用性，所以 <code>Strict Quorum</code> 機制可能會導致寫入失敗，所以 <code>Dynamo</code> 採用 <code>Sloppy Quorum</code>，差別在於 <code>Strict Quorum</code> 需要維持節點資料的一致性但 <code>Sloppy Quorum</code> 可以接受暫時的不一致等節點復活後再同步就好。</p>
+<p><code>Dynamo</code> 的 <code>Sloppy Quorum</code> 作法是當寫入的節點無法使用的時候先將資料寫入到在 <code>Consistence Hash</code> 環中的下一個節點，並記錄這個資料原本是要寫入到哪一個節點，等節點復活後再將資料同步過去，這個作法稱為 <code>Hinted Handoff</code>。</p>
+<h4 id="停機後復原"><a href="#停機後復原" class="headerlink" title="停機後復原"></a>停機後復原</h4><p><code>Hinted Handoff</code> 能夠處理節點暫時的失去功能，但如果出現接收 <code>Hinted</code> 的節點在將資料傳給原始節點前就失去功能，這樣就會出現副本之間的不一致，<code>Dynamo</code> 使用 <code>Anti-Entropy</code> 協議來處理副本之間的同步，<code>Anti-Entropy</code> 會讓每一個節點都維護在 <code>Ring</code> 中各自 Key Range 的 <code>Merkle Tree</code>，當發現節點的某一顆 <code>Merkle Tree</code> 的 Hash 值不一致後就開始從源頭找到哪一部分的資料不相同並進行資料的同步，因為 <code>Merkle Tree</code> 的特性可以減少 Disk I&#x2F;O 的次數。</p>
+<h4 id="節點新增刪除"><a href="#節點新增刪除" class="headerlink" title="節點新增刪除"></a>節點新增刪除</h4><p><code>Dynamo</code> 透過顯式的方法 (Terminal 或瀏覽器等) 由管理員操作增刪節點的操作，並且透過 <code>Gossip Protocol</code> 的方式，先由一個節點知道增刪操作，這個節點再將這個訊息傳給鄰近節點，持續到所有節點都收到相關訊息，透過這樣的方式就能夠保證最終所有節點都會知道操作。</p>
+<p><img src="/2024/03/08/dynamo-amazon-keyvalue-db/tech_summary.png" alt="Alt text"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/database/">database</a><a class="post-meta__tags" href="/tags/paper/">paper</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/12/16/spanner/" title="論文閱讀：Spanner：Google’s Globally-Distributed Database"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">論文閱讀：Spanner：Google’s Globally-Distributed Database</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2023/10/04/influx-go2rust/" title="InfluxDB 從 Golang 換成 Rust !"><img class="cover" src="/2023/10/04/influx-go2rust/cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-04</div><div class="title">InfluxDB 從 Golang 換成 Rust !</div></div></a></div><div><a href="/2023/10/05/intro-time-series-db/" title="Time Series Database 簡介"><img class="cover" src="/2023/10/05/intro-time-series-db/cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-05</div><div class="title">Time Series Database 簡介</div></div></a></div><div><a href="/2023/12/08/critique-ansi-sql-isolation/" title="論文閱讀：A Critique of ANSI SQL Isolation Levels"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-08</div><div class="title">論文閱讀：A Critique of ANSI SQL Isolation Levels</div></div></a></div><div><a href="/2023/11/16/map-reduce/" title="論文閱讀： MapReduce Simplified Data Processing on Larger Clusters"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">論文閱讀： MapReduce Simplified Data Processing on Larger Clusters</div></div></a></div><div><a href="/2023/12/16/spanner/" title="論文閱讀：Spanner：Google’s Globally-Distributed Database"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-16</div><div class="title">論文閱讀：Spanner：Google’s Globally-Distributed Database</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Fan</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Noahnut" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/qi-fan-zhuang-7664491a2/" target="_blank" title="Linkedin"><i class="fab fa-linkedin" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:liveinthewide@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dynamo-%E7%9A%84%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">Dynamo 的背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dynamo-%E7%9A%84%E8%A8%AD%E8%A8%88"><span class="toc-number">2.</span> <span class="toc-text">Dynamo 的設計</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamo-%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="toc-number">2.1.</span> <span class="toc-text">Dynamo 設計原則</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Partitioning"><span class="toc-number">2.1.1.</span> <span class="toc-text">Partitioning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%AB%E5%85%A5%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7"><span class="toc-number">2.1.2.</span> <span class="toc-text">寫入的高可用性</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Vector-Clock"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">Vector Clock</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9F%AD%E6%9A%AB%E5%81%9C%E6%A9%9F%E8%B3%87%E6%96%99%E8%99%95%E7%90%86-Hinted-Handoff"><span class="toc-number">2.1.3.</span> <span class="toc-text">短暫停機資料處理 Hinted Handoff</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%A9%9F%E5%BE%8C%E5%BE%A9%E5%8E%9F"><span class="toc-number">2.1.4.</span> <span class="toc-text">停機後復原</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AF%80%E9%BB%9E%E6%96%B0%E5%A2%9E%E5%88%AA%E9%99%A4"><span class="toc-number">2.1.5.</span> <span class="toc-text">節點新增刪除</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/08/dynamo-amazon-keyvalue-db/" title="Dynamo Amazon 的高可用性 Key-Value Database">Dynamo Amazon 的高可用性 Key-Value Database</a><time datetime="2024-03-08T03:21:01.000Z" title="Created 2024-03-08 11:21:01">2024-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/16/spanner/" title="論文閱讀：Spanner：Google’s Globally-Distributed Database">論文閱讀：Spanner：Google’s Globally-Distributed Database</a><time datetime="2023-12-16T12:36:14.000Z" title="Created 2023-12-16 20:36:14">2023-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/08/critique-ansi-sql-isolation/" title="論文閱讀：A Critique of ANSI SQL Isolation Levels">論文閱讀：A Critique of ANSI SQL Isolation Levels</a><time datetime="2023-12-08T08:53:58.000Z" title="Created 2023-12-08 16:53:58">2023-12-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/03/redis-pubsub-pub/" title="Redis 源碼解析 - PubSub 實作 (Publish)">Redis 源碼解析 - PubSub 實作 (Publish)</a><time datetime="2023-12-03T02:41:21.000Z" title="Created 2023-12-03 10:41:21">2023-12-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/28/redis-pubsub-code/" title="Redis 源碼解析 - PubSub 實作 (Subscribe)">Redis 源碼解析 - PubSub 實作 (Subscribe)</a><time datetime="2023-11-28T08:16:08.000Z" title="Created 2023-11-28 16:16:08">2023-11-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Fan</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
